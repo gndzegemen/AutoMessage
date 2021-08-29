@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Model.Models.Contact>
+<br />
+<br />
+
+<div class="border p-4 bg-white">
+    <div class="row">
+        <div class="col-9">
+            <h2 class="text-info">Contact List</h2>
+        </div>
+        <div class="clo-3 text-right">
+            <a asp-action="Update" class="btn btn-info form-control"> Create new one </a>
+        </div>
+        <div class="clo-3 text-right">
+            <a asp-action="Run" class="btn btn-success form-control"> Run</a>
+        </div>
+    </div>
+
+    <br />
+    <div>
+        @if (Model.Count() > 0)
+        {
+            <table class="table table-striped border">
+
+
+                <tr class="table-secondary">
+
+                    <th class="col-8">Name</th>
+                    <th class="col-2">Phone Number</th>
+                </tr>
+
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            @item.PhoneNumber
+                        </td>
+                        <td>
+                            <a class="btn btn-primary text-white" asp-action="Update" asp-route-id="@item.Id">Edit</a>
+                            <a class="btn btn-danger text-white" asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        }
+        else
+        {
+            <p>Listelenecek herhangi bir contact bulunamadı</p>
+        }
+    </div>
+
+</div>
+
