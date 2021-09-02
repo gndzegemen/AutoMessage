@@ -1,0 +1,60 @@
+﻿@model Model.Models.Message
+@{
+    var title = "Update";
+}
+
+<form method="post">
+    <div class="row p-3 border">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MessageId" />
+        @if (Model.MessageId != 0)
+        {
+            title = "Person Information";
+        }
+        <div class="col-12 border-bottom">
+            <h2 class="text-primary">@title</h2>
+        </div>
+
+        <div class="col-8 pt-4">
+            <div class="form-group row">
+
+                <div class="col-4 ">
+                    <label asp-for="Text">Text</label>
+                </div>
+                <div class="col-8 " style="padding-top:0px; margin-bottom:5px">
+                    <input asp-for="Text" class="form-control " />
+                    <span asp-validation-for="Text" class="text-danger"></span>
+                </div>
+
+                <div class="col-4">
+                    <label asp-for="Count">Count</label>
+                </div>
+
+                <div class="col-8 ">
+                    <input asp-for="Count" class="form-control " />
+                    <span asp-validation-for="Count" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col-4 offset-4">
+                    @if (Model.MessageId != 0)
+                    {
+                        <button type="submit" class="btn btn-primary form-control"> Update text of message </button>
+                    }
+                    else
+                    {
+                        <button type="submit" class="btn btn-primary form-control"> Create new text </button>
+                    }
+                </div>
+                <div class="col-4">
+                    <a asp-action="Index" class="btn btn-success form-control">Back to list</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <patial name="_ValidationScriptsPartial" />
+}
+

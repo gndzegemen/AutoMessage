@@ -1,0 +1,71 @@
+﻿@model IEnumerable<Model.Models.Message>
+    <br />
+    <br />
+
+    <div class="border p-4 bg-white">
+        <div class="row">
+            <div class="col-3 text-right">
+                <h2 class="text-info">Text List</h2>
+            </div>
+            <div class="col-3 text-right">
+                <a asp-action="Update" class="btn btn-success form-control"> Create new one </a>
+            </div>
+
+            <div class="col-5 text-right">
+                <a asp-action="DeleteMultipleData" class="btn btn-danger form-control"> Delete last 10 data </a>
+            </div>
+
+        </div>
+
+
+        <br />
+        <div>
+            @if (Model.Count() > 0)
+            {
+                <table class="table table-striped border">
+
+
+                    <tr class="table-secondary">
+
+                        <th class="col-3">Text</th>
+                        <th class="col-3">Count</th>
+                        <th class="col-2">Setting</th>
+                    </tr>
+
+
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+
+                            <td>
+                                @item.Text
+                            </td>
+                            <td>
+                                @item.Count
+                            </td>
+                            <td>
+                                <a class="btn btn-primary text-white" asp-action="Update" asp-route-id="@item.MessageId">Edit</a>
+                                <a class="btn btn-danger text-white" asp-action="Delete" asp-route-id="@item.MessageId">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            else
+            {
+                <p>Listelenecek herhangi bir contact bulunamadı</p>
+            }
+        </div>
+
+    </div>
+    <div>
+        <form method="post" asp-action="ImportMessages" enctype="multipart/form-data">
+            <div>
+                <label for="file">Choose file to upload</label>
+                <input type="file" id="file" name="file" multiple>
+            </div>
+            <div>
+                <button>Submit</button>
+            </div>
+        </form>
+    </div>

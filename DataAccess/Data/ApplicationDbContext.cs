@@ -16,5 +16,7 @@ namespace DataAccess.Data
         }
 
         public DbSet<Contact> Contacts { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<ContactMessage> ContactMessages { get; set; }
     }
 }

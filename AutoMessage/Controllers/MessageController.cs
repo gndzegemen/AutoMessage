@@ -10,29 +10,30 @@ using System.Threading.Tasks;
 
 namespace AutoMessage.Controllers
 {
-    public class ContactController : Controller
+    public class MessageController : Controller
     {
+
         private readonly ApplicationDbContext _db;
 
-        public ContactController(ApplicationDbContext db)
+        public MessageController(ApplicationDbContext db)
         {
             _db = db;
         }
         public IActionResult Index()
         {
-            List<Contact> objlist = _db.Contacts.ToList();
+            List<Message> objlist = _db.Messages.ToList();
 
             return View(objlist);
         }
 
         public IActionResult Update(int? id)
         {
-            Contact obj = new Contact();
+            Message obj = new Message();
             if (id == null)
             {
                 return View(obj);
             }
-            obj = _db.Contacts.FirstOrDefault(a => a.ContactId == id);
+            obj = _db.Messages.FirstOrDefault(a => a.MessageId == id);
 
             if (obj == null)
             {
@@ -46,21 +47,21 @@ namespace AutoMessage.Controllers
         [ValidateAntiForgeryToken]
 
 
-        public IActionResult Update(Contact obj)
+        public IActionResult Update(Message obj)
         {
-            List<string> NameList = _db.Contacts.Select(x => x.Name.ToLower()).ToList();
+            List<string> TextList = _db.Messages.Select(x => x.Text.ToLower()).ToList();
 
             if (ModelState.IsValid)
             {
-                string name = obj.Name;
-                string phoneNumber = obj.PhoneNumber;
-                if (!NameList.Contains(name.ToLower()))
+                string text = obj.Text;
+                int count = obj.Count;
+                if (!TextList.Contains(text.ToLower()))
                 {
-                    if (obj.ContactId == 0)
+                    if (obj.MessageId == 0)
                     {
 
 
-                        _db.Contacts.Add(new Contact { Name = name, PhoneNumber = phoneNumber });
+                        _db.Messages.Add(new Message { Text = text, Count=count });
 
 
 
@@ -68,7 +69,7 @@ namespace AutoMessage.Controllers
                     else
                     {
 
-                        _db.Contacts.Update(obj);
+                        _db.Messages.Update(obj);
                     }
 
                 }
@@ -81,29 +82,29 @@ namespace AutoMessage.Controllers
 
         public IActionResult Delete(int id)
         {
-            var objDb = _db.Contacts.FirstOrDefault(x => x.ContactId == id);
-            _db.Contacts.Remove(objDb);
+            var objDb = _db.Messages.FirstOrDefault(x => x.MessageId == id);
+            _db.Messages.Remove(objDb);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult DeleteMultipleData()
         {
-            IEnumerable<Contact> ContactList = _db.Contacts.OrderByDescending(a => a.ContactId).Take(10).ToList();
+            IEnumerable<Message> MessageList = _db.Messages.OrderByDescending(a => a.MessageId).Take(10).ToList();
 
 
 
-            _db.Contacts.RemoveRange(ContactList);
+            _db.Messages.RemoveRange(MessageList);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
         [Obsolete]
-        public IActionResult ImportContacts(IFormFile file)
+        public IActionResult ImportMessages(IFormFile file)
         {
-            List<Contact> ContactList = new List<Contact>();
-            List<string> NameList = _db.Contacts.Select(x => x.Name.ToLower()).ToList();
+            List<Message> MessageList = new List<Message>();
+            List<string> TextList = _db.Messages.Select(x => x.Text.ToLower()).ToList();
 
             using (var sreader = new StreamReader(file.OpenReadStream()))
             {
@@ -111,42 +112,21 @@ namespace AutoMessage.Controllers
                 while (!sreader.EndOfStream)                          //get all the content in rows 
                 {
                     string[] rows = sreader.ReadLine().Split(',');
-                    string name = rows[0];
-                    string phoneNumber = rows[1];
-                    if (NameList.Contains(name.ToLower()))
+                    string count = rows[0];
+                    string text = rows[1];
+                    if (TextList.Contains(text.ToLower()))
                     {
                         continue;
                     }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(phoneNumber))
-                            ContactList.Add(new Contact { Name = name, PhoneNumber = phoneNumber });
-                    }
+                    else { MessageList.Add(new Message{ Text=text, Count = int.Parse(count) }); }
 
                 }
 
             }
 
-            _db.Contacts.AddRange(ContactList);
+            _db.Messages.AddRange(MessageList);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-
-
-
-
-        //public IActionResult Run()
-        //{
-        //    List<String> phoneNumbers = _db.Contacts.Select(x=>x.PhoneNumber).ToList();
-
-
-        //    var autoMessageService = new AutoMessage.Services.AutoMessageService();
-        //    autoMessageService.SendMessage( phoneNumbers );
-
-
-        //    return View();
-
-
-        //}
     }
 }

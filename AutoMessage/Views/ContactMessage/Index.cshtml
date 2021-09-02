@@ -1,0 +1,148 @@
+﻿
+@model AutoMessage.ViewModel.ContactsAndMessages
+
+@{
+
+    int number = 1;
+}
+<br />
+<br />
+
+<div class="align-items-center">
+
+    <div class="grid-container">
+
+        <div class="grid-child 1">
+            <label style="color:black; background-color:crimson"> number of contacts </label>
+            <span style="color:crimson; background-color:black"> @Model.GetContactCount() </span>
+        </div>
+
+        <div class="grid-child 2">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                <option selected>Select a contact</option>
+                @foreach (var item in Model?.contacts)
+                {
+                    <option value="@item.ContactId">@item.Name</option>
+                }
+            </select>
+        </div>
+
+        <div class="grid-child 3">
+            <a class="btn btn-success" type="submit" href="ContactMessage/SendAllMessagesToOneContact">Send all messages to selected contact</a>
+        </div>
+
+
+
+    </div>
+
+</div>
+
+<div class="align-content-center">
+
+    <div class="grid-container">
+
+        <div class="grid-child 1">
+            <label style="color:black; background-color:crimson"> number of messages </label>
+            <span style="color:crimson; background-color:black"> @Model?.GetMessageCount() </span>
+        </div>
+
+        <div class="grid-child 2">
+            <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                <option selected>Select a message</option>
+                @foreach (var item in Model.messages)
+                {
+                    <option value="@item.MessageId">@item.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="grid-child 3">
+            <a class="btn btn-success" type="submit" href="ContactMessage/SendAMessageToAllContacts">Send all messages to selected contact</a>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<div class="align-content-center">
+    <form asp-action="AddANumberOnAContact" method="post" asp-controller="ContactMessageController">
+        <div class="grid-container">
+
+            <div class="grid-child 1">
+                <select name="contactId" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option selected>Select a contact</option>
+                    @foreach (var item in Model.contacts)
+                    {
+                        <option value="@item.ContactId">@item.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="grid-child 2">
+                <select name="messageId" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+                    <option selected>Select a message</option>
+                    @foreach (var item in Model.messages)
+                    {
+                        <option value="@item.MessageId">@item.Text</option>
+                    }
+                </select>
+            </div>
+
+            <div class="grid-child 3">
+                <button class="btn btn-success" type="submit" asp-action="AddANumberOnAContact">Add</button>
+            </div>
+
+        </div>
+    </form>
+
+</div>
+
+<div> <a asp-action="OtherOption">other option</a> </div>
+
+
+<br />
+<br />
+<div>
+    @if (Model.contactMessages.Count() > 0)
+    {
+        <table class="table table-striped border">
+            <tr class="table-secondary">
+                <th> Id</th>
+                <th> Contact</th>
+                <th>Message</th>
+
+            </tr>
+            @foreach (var item in Model.contactMessages)
+            {
+                <tr>
+                    <td>
+                        @(number++)
+                    </td>
+
+                    <td>
+                        @item.Contact.Name
+                    </td>
+                    <td>
+                        @item.Message.Text
+                    </td>
+
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <p>Listelenecek herhangi bir veri bulunamadı</p>
+    }
+</div>
+
+
+<style>
+    .grid-container {
+        display: grid;
+        grid-template-columns: 2fr 2fr 2fr;
+        grid-gap: 20px;
+    }
+</style>
